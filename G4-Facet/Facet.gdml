@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE gdml [
+<!ENTITY materials SYSTEM "materials.xml">
+]>
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
+<define>
+<position name="central" x="0" y="0" z="0" unit="mm"/>
+<rotation name="identity" x="0" y="0" z="0" unit="degree"/>
+<variable name="DEGtoRAD" value="1.74532925199433E-02"/>
+</define>
+<!-- the content of the materials.xml file will be included here -->
+
+&materials;
+
+<solids>
+<box name="G4World_PartBody" x="(800.000000)*2" y="(800.000000)*2" z="(800.000000)*2" lunit="mm"/>
+<box name="side_PartBody" x="(5.000000)*2" y="(50.000000)*2" z="(50.000000)*2" lunit="mm"/>
+<box name="CCDbase_PartBody" x="(13.000000)*2" y="(8.000000)*2" z="(1.000000)*2" lunit="mm"/>
+<box name="pixel_PartBody" x="(0.008000)*2" y="(0.008000)*2" z="(0.150000)*2" lunit="mm"/>
+<box name="matrix_PartBody" x="(4.200000)*2" y="(4.200000)*2" z="(0.150000)*2" lunit="mm"/>
+<box name="pixelline_PartBody" x="(4.200000)*2" y="(0.008000)*2" z="(0.150000)*2" lunit="mm"/>
+<box name="CCD_PartBody" x="(13.250000)*2" y="(8.100000)*2" z="(1.250000)*2" lunit="mm"/>
+<box name="case_PartBody" x="(50.000000)*2" y="(50.000000)*2" z="(50.000000)*2" lunit="mm"/>
+<box name="casecavern_PartBody" x="(45.000000)*2" y="(45.000000)*2" z="(45.000000)*2" lunit="mm"/>
+</solids>
+<structure>
+
+<volume name="pixel">
+<materialref ref="G4_Si"/>
+<solidref ref="pixel_PartBody"/>
+<auxiliary auxtype="SensDet" auxvalue="Pixel_SD"/>
+</volume>
+
+<volume name="pixelline">
+<materialref ref="G4_Galactic"/>
+<solidref ref="pixelline_PartBody"/>
+<divisionvol number="512" width=".0142" offset="0" axis="kXAxis" unit="mm">
+<volumeref ref="pixel"/>
+</divisionvol>
+</volume>
+
+<volume name="matrix">
+<materialref ref="G4_Galactic"/>
+<solidref ref="matrix_PartBody"/>
+<divisionvol number="512" width=".0142" offset="0" axis="kYAxis" unit="mm">
+<volumeref ref="pixelline"/>
+</divisionvol>
+</volume>
+
+
+<volume name="side">
+<materialref ref="G4_Cu"/>
+<solidref ref="side_PartBody"/>
+</volume>
+<volume name="CCDbase">
+<materialref ref="G4_SILICON_DIOXIDE"/>
+<solidref ref="CCDbase_PartBody"/>
+</volume>
+
+<volume name="CCD1">
+<materialref ref="G4_Galactic"/>
+<solidref ref="CCD_PartBody"/>
+<physvol>
+<volumeref ref="matrix"/>
+<position name="matrix_pos_CCD1" x="0" y="0" z="1" unit="mm"/>
+<rotationref ref="identity"/>
+</physvol>
+<physvol>
+<volumeref ref="CCDbase"/>
+<position name="CCDbase_pos_CCD1" x="0" y="0" z="-.25" unit="mm"/>
+<rotationref ref="identity"/>
+</physvol>
+</volume>
+
+<volume name="CCD2">
+<materialref ref="G4_Galactic"/>
+<solidref ref="CCD_PartBody"/>
+<physvol>
+<volumeref ref="matrix"/>
+<position name="matrix_pos_CCD2" x="0" y="0" z="1" unit="mm"/>
+<rotationref ref="identity"/>
+</physvol>
+<physvol>
+<volumeref ref="CCDbase"/>
+<position name="CCDbase_pos_CCD2" x="0" y="0" z="-.25" unit="mm"/>
+<rotationref ref="identity"/>
+</physvol>
+</volume>
+
+<volume name="CCD3">
+<materialref ref="G4_Galactic"/>
+<solidref ref="CCD_PartBody"/>
+<physvol>
+<volumeref ref="matrix"/>
+<position name="matrix_pos_CCD3" x="0" y="0" z="1" unit="mm"/>
+<rotationref ref="identity"/>
+</physvol>
+<physvol>
+<volumeref ref="CCDbase"/>
+<position name="CCDbase_pos_CCD3" x="0" y="0" z="-.25" unit="mm"/>
+<rotationref ref="identity"/>
+</physvol>
+</volume>
+
+<volume name="casecavern">
+<materialref ref="Air"/>
+<solidref ref="casecavern_PartBody"/>
+<physvol>
+<volumeref ref="CCD1"/>
+<position name="CCD1_pos_casecavern" x="0" y="0" z="41" unit="mm"/>
+<rotationref ref="identity"/>
+</physvol>
+<physvol>
+<volumeref ref="CCD2"/>
+<position name="CCD2_pos_casecavern" x="0" y="0" z="38" unit="mm"/>
+<rotation name="CCD2_rot_casecavern" x="-(180.000000000259)" y="-(0)" z="-(0)" unit="deg"/>
+</physvol>
+<physvol>
+<volumeref ref="CCD3"/>
+<position name="CCD3_pos_casecavern" x="0" y="0" z="35" unit="mm"/>
+<rotationref ref="identity"/>
+</physvol>
+</volume>
+
+<volume name="case">
+<materialref ref="G4_Cu"/>
+<solidref ref="case_PartBody"/>
+<physvol>
+<volumeref ref="casecavern"/>
+<position name="casecavern_pos_case" x="0" y="0" z="4.3" unit="mm"/>
+<rotationref ref="identity"/>
+</physvol>
+</volume>
+
+<volume name="G4World">
+<materialref ref="G4_Galactic"/>
+<solidref ref="G4World_PartBody"/>
+<physvol>
+<volumeref ref="case"/>
+<positionref ref="central"/>
+<rotationref ref="identity"/>
+</physvol>
+</volume>
+
+
+</structure>
+<setup name="FAIRgeom" version="1.0">
+<world ref="G4World"/>
+</setup>
+</gdml>
